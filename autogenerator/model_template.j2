@@ -1,0 +1,52 @@
+# This Jinja2 template generates SQLAlchemy and Pydantic model classes #
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Text, Sequence
+from sqlalchemy.orm import relationship
+from sqlalchemy.ext.declarative import declarative_base
+from pydantic import BaseModel
+from typing import Optional
+from datetime import datetime
+
+Base = declarative_base()
+
+
+# SQLAlchemy Model
+class {{ model_name }}(Base):
+    __tablename__ = "{{ table_name }}"
+{% for field in fields %}
+{%- if field.name == "id" %}
+    # Sequence required by DuckDB, due to its lack of support for `SERIAL` used by SQLAlchemy for auto-increment
+    {{ table_name }}_id_seq = Sequence("{{ table_name }}_id_seq")
+    id = Column(
+        Integer,
+        "{{ table_name }}_id_seq",
+        server_default={{ table_name }}_id_seq.next_value(),
+        primary_key=True,
+    )
+{%- else %}
+    {{ field.name }} = Column({{ field.type }}, primary_key={{ field.primary_key }}, index={{ field.index }}, nullable={{ field.nullable }})
+{%- endif %}
+{%- endfor %}
+
+
+# Pydantic Models
+class {{ model_name }}Base(BaseModel):
+{%- for field in fields %}
+    {%- if not field.primary_key %}
+    {{ field.name }}: Optional[{{ field.pydantic_type }}] = None
+    {%- endif %}
+{%- endfor %}
+
+
+class {{ model_name }}Create({{ model_name }}Base):
+    pass
+
+
+class {{ model_name }}DB({{ model_name }}Base):
+{%- for field in fields %}
+    {%- if field.primary_key %}
+    {{ field.name }}: {{ field.pydantic_type }}
+    {%- endif %}
+{%- endfor %}
+
+    class Config:
+        from_attributes = True
