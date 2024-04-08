@@ -11,8 +11,9 @@ from .{{ relation.model|lower }} import {{ relation.model }}DB
 
 Base = declarative_base()
 
-# Association Tables #
-{% for table in association_tables %}
+{% if association_tables|length > 0 %}
+# Association Tables
+{% for table in association_tables -%}
 {{ table.table_name }} = Table(
     '{{ table.table_name }}', 
     Base.metadata,
@@ -20,7 +21,8 @@ Base = declarative_base()
     Column('{{ column.name }}', {{ column.type }}, ForeignKey('{{ column.foreign_key }}'), primary_key=True),
     {% endfor -%}
 )
-{% endfor %}
+{% endfor -%}
+{% endif %}
 
 # SQLAlchemy Model
 class {{ model_name }}(Base):

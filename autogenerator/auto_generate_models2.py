@@ -12,8 +12,8 @@ def generate_model(model_name, fields, relationships, association_tables):
         model_name=model_name,
         table_name=model_name.lower(),
         fields=fields,
-        relationships=relationships,
-        association_tables=association_tables,
+        relationships=relationships or [],
+        association_tables=association_tables or [],
     )
 
 
@@ -30,10 +30,10 @@ if __name__ == "__main__":
 
         model_name = model_data["model_name"]
         fields = model_data["fields"]
-        relationships = model_data["relationships"]
-        association_tables = model_data["association_tables"]
+        relationships = model_data.get("relationships")
+        association_tables = model_data.get("association_tables")
 
-        # print(f"association_tables: {len(association_tables)}")
+        # print(f"association_tables")
 
         output = generate_model(model_name, fields, relationships, association_tables)
 
