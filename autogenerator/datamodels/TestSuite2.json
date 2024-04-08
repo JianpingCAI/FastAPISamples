@@ -7,5 +7,14 @@
     ],
     "relationships": [
         {"model": "TestCase", "back_populates": "test_suites", "secondary": "testsuite_testcase_m2m"}
+    ],
+    "association_tables": [
+        {
+            "table_name": "testsuite_testcase_m2m",
+            "columns": [
+                {"name": "test_suite_id", "type": "Integer", "foreign_key": "testsuite.id"},
+                {"name": "test_case_id", "type": "Integer", "foreign_key": "testcase.id"}
+            ]
+        }
     ]
 }

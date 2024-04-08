@@ -3,13 +3,17 @@ import json
 import sys
 
 
-def generate_model(model_name, fields, relationships):
+def generate_model(model_name, fields, relationships, association_tables):
     template_loader = jinja2.FileSystemLoader(searchpath="./")
     template_env = jinja2.Environment(loader=template_loader)
     template = template_env.get_template("model_template2.j2")
 
     return template.render(
-        model_name=model_name, table_name=model_name.lower(), fields=fields, relationships=relationships
+        model_name=model_name,
+        table_name=model_name.lower(),
+        fields=fields,
+        relationships=relationships,
+        association_tables=association_tables,
     )
 
 
@@ -27,10 +31,13 @@ if __name__ == "__main__":
         model_name = model_data["model_name"]
         fields = model_data["fields"]
         relationships = model_data["relationships"]
+        association_tables = model_data["association_tables"]
 
-        output = generate_model(model_name, fields, relationships)
+        # print(f"association_tables: {len(association_tables)}")
 
-        with open(f"{model_name.lower()}.py", "w") as out_file:
+        output = generate_model(model_name, fields, relationships, association_tables)
+
+        with open(f"./generated/{model_name.lower()}.py", "w") as out_file:
             out_file.write(output)
 
     except json.JSONDecodeError:

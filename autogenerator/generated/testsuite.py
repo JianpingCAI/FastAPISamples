@@ -1,5 +1,5 @@
 # This Jinja2 template generates SQLAlchemy and Pydantic model classes #
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Text, Sequence
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Text, Sequence, Table
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 from pydantic import BaseModel
@@ -9,6 +9,15 @@ from .testcase import TestCaseDB
 
 
 Base = declarative_base()
+
+# Association Tables #
+
+testsuite_testcase_m2m = Table(
+    'testsuite_testcase_m2m', 
+    Base.metadata,
+    Column('test_suite_id', Integer, ForeignKey('testsuite.id'), primary_key=True),
+    Column('test_case_id', Integer, ForeignKey('testcase.id'), primary_key=True),
+    )
 
 
 # SQLAlchemy Model
@@ -26,7 +35,8 @@ class TestSuite(Base):
     name = Column(String(255), primary_key=False, index=False, nullable=False)
     description = Column(Text, primary_key=False, index=False, nullable=True)
 
-    testcases = relationship("TestCase", back_populates="test_suites")
+    # Relationships
+    testcases = relationship("TestCase",secondary="testsuite_testcase_m2m",back_populates="test_suites")
 
 
 # Pydantic Models

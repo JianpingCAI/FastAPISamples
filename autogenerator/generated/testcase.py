@@ -25,7 +25,8 @@ class TestCase(Base):
     )
     description = Column(Text, primary_key=False, index=False, nullable=True)
 
-    testsuites = relationship("TestSuite", back_populates="test_cases")
+    # Relationships
+    testsuites = relationship("TestSuite",secondary="testsuite_testcase_m2m",back_populates="test_cases")
 
 
 # Pydantic Models
