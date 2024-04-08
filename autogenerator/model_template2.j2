@@ -5,9 +5,6 @@ from sqlalchemy.ext.declarative import declarative_base
 from pydantic import BaseModel
 from typing import Optional, List
 from datetime import datetime
-{% for relation in relationships -%}
-from .{{ relation.model|lower }} import {{ relation.model }}DB
-{% endfor %}
 
 Base = declarative_base()
 
@@ -46,7 +43,6 @@ class {{ model_name }}(Base):
 {%- endfor %}
 {% if (relationships|length) > 0 %}
     # Relationships
-{%- endif -%}
 {% for relation in relationships %}
     {{ relation.model|lower }}s = relationship("{{ relation.model }}",
     {%- if relation.secondary -%}
@@ -54,6 +50,7 @@ class {{ model_name }}(Base):
     {%- endif -%}
     back_populates="{{ relation.back_populates }}")
 {% endfor %}
+{%- endif -%}
 
 # Pydantic Models
 class {{ model_name }}Base(BaseModel):
@@ -74,8 +71,12 @@ class {{ model_name }}DB({{ model_name }}Base):
     {{ field.name }}: {{ field.pydantic_type }}
     {%- endif %}
 {%- endfor %}
+{% if (relationships|length) > 0 %}
+    # Relationships
     {% for relation in relationships -%}
+    from .{{ relation.model|lower }} import {{ relation.model }}DB
     {{ relation.model|lower }}s: List[{{ relation.model }}DB]
-    {% endfor %}
+    {% endfor -%}
+{%- endif %}
     class Config:
         from_attributes = True
