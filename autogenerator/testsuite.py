@@ -3,8 +3,10 @@ from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Text, Sequ
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, List
 from datetime import datetime
+from .testcase import TestCaseDB
+
 
 Base = declarative_base()
 
@@ -23,18 +25,14 @@ class TestSuite(Base):
     )
     name = Column(String(255), primary_key=False, index=False, nullable=False)
     description = Column(Text, primary_key=False, index=False, nullable=True)
-    project_id = Column(Integer, primary_key=False, index=False, nullable=True)
-    created_at = Column(DateTime, primary_key=False, index=False, nullable=False)
-    updated_at = Column(DateTime, primary_key=False, index=False, nullable=False)
+
+    testcases = relationship("TestCase", back_populates="test_suites")
 
 
 # Pydantic Models
 class TestSuiteBase(BaseModel):
     name: Optional[str] = None
     description: Optional[Optional[str]] = None
-    project_id: Optional[Optional[int]] = None
-    created_at: Optional[datetime] = None
-    updated_at: Optional[datetime] = None
 
 
 class TestSuiteCreate(TestSuiteBase):
@@ -43,6 +41,7 @@ class TestSuiteCreate(TestSuiteBase):
 
 class TestSuiteDB(TestSuiteBase):
     id: int
-
+    testcases: List[TestCaseDB]
+    
     class Config:
         from_attributes = True

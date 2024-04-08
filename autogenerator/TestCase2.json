@@ -1,0 +1,10 @@
+{
+    "model_name": "TestCase",
+    "fields": [
+        {"name": "id", "type": "Integer", "pydantic_type": "int", "primary_key": true, "index": true, "nullable": false},
+        {"name": "description", "type": "Text", "pydantic_type": "Optional[str]", "primary_key": false, "index": false, "nullable": true}
+    ],
+    "relationships": [
+        {"model": "TestSuite", "back_populates": "test_cases", "secondary": "testsuite_testcase_m2m"}
+    ]
+}
