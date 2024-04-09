@@ -1,14 +1,13 @@
 # This Jinja2 template generates SQLAlchemy and Pydantic model classes #
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Text, Sequence
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Text, Sequence, Table
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 from pydantic import BaseModel
 from typing import Optional, List
 from datetime import datetime
-from .testsuite import TestSuiteDB
-
 
 Base = declarative_base()
+
 
 
 # SQLAlchemy Model
@@ -26,9 +25,8 @@ class TestCase(Base):
     description = Column(Text, primary_key=False, index=False, nullable=True)
 
     # Relationships
+
     testsuites = relationship("TestSuite",secondary="testsuite_testcase_m2m",back_populates="test_cases")
-
-
 # Pydantic Models
 class TestCaseBase(BaseModel):
     description: Optional[Optional[str]] = None
@@ -40,6 +38,9 @@ class TestCaseCreate(TestCaseBase):
 
 class TestCaseDB(TestCaseBase):
     id: int
+
+    # Relationships
+    from .testsuite import TestSuiteDB
     testsuites: List[TestSuiteDB]
     
     class Config:

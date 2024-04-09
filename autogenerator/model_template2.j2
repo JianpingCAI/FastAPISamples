@@ -6,13 +6,11 @@ from pydantic import BaseModel
 from typing import Optional, List
 from datetime import datetime
 
-Base = declarative_base()
-
 {% if association_tables|length > 0 %}
 # Association Tables
 {% for table in association_tables -%}
 {{ table.table_name }} = Table(
-    '{{ table.table_name }}', 
+    {{ table.table_name }}, 
     Base.metadata,
     {% for column in table.columns -%}
     Column('{{ column.name }}', {{ column.type }}, ForeignKey('{{ column.foreign_key }}'), primary_key=True),
@@ -30,7 +28,7 @@ class {{ model_name }}(Base):
     {{ table_name }}_id_seq = Sequence("{{ table_name }}_id_seq")
     id = Column(
         Integer,
-        "{{ table_name }}_id_seq",
+        {{ table_name }}_id_seq,
         server_default={{ table_name }}_id_seq.next_value(),
         primary_key=True,
     )

@@ -5,13 +5,11 @@ from sqlalchemy.ext.declarative import declarative_base
 from pydantic import BaseModel
 from typing import Optional, List
 from datetime import datetime
-from .testcase import TestCaseDB
-
 
 Base = declarative_base()
 
-# Association Tables #
 
+# Association Tables
 testsuite_testcase_m2m = Table(
     'testsuite_testcase_m2m', 
     Base.metadata,
@@ -36,9 +34,8 @@ class TestSuite(Base):
     description = Column(Text, primary_key=False, index=False, nullable=True)
 
     # Relationships
+
     testcases = relationship("TestCase",secondary="testsuite_testcase_m2m",back_populates="test_suites")
-
-
 # Pydantic Models
 class TestSuiteBase(BaseModel):
     name: Optional[str] = None
@@ -51,6 +48,9 @@ class TestSuiteCreate(TestSuiteBase):
 
 class TestSuiteDB(TestSuiteBase):
     id: int
+
+    # Relationships
+    from .testcase import TestCaseDB
     testcases: List[TestCaseDB]
     
     class Config:
