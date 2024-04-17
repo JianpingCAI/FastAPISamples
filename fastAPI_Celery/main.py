@@ -12,18 +12,6 @@ async def start_task():
     return {"message": "Task started", "task_id": task.id}
 
 
-# @app.get("/task-status/{task_id}")
-# async def get_task_status(task_id: str):
-#     task_result = AsyncResult(task_id, app=celery_app)
-#     if not task_result.ready():
-#         return {"status": task_result.status}
-#     try:
-#         result = task_result.get(timeout=1)
-#         return {"status": task_result.status, "result": result}
-#     except Exception as e:
-#         raise HTTPException(status_code=500, detail=str(e))
-
-
 @app.get("/task-status/{task_id}")
 async def get_task_status(task_id: str):
     task_result = AsyncResult(task_id, app=celery_app)
