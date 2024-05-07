@@ -31,8 +31,6 @@ student_course_association = Table(
 
 # Student class for many-to-many relationship
 id_seq1 = Sequence("id_seq1")
-
-
 class Student(Base):
     __tablename__ = "student"
     id = Column(Integer, id_seq1, server_default=id_seq1.next_value(), primary_key=True)
@@ -43,8 +41,6 @@ class Student(Base):
 
 # Course class for many-to-many relationship
 id_seq2 = Sequence("id_seq2")
-
-
 class Course(Base):
     __tablename__ = "course"
     id = Column(Integer, id_seq2, server_default=id_seq2.next_value(), primary_key=True)
@@ -52,6 +48,22 @@ class Course(Base):
         "Student", secondary=student_course_association, back_populates="courses"
     )
 
+#############################################################################
+# Parent class for one-to-many/many-to-one relationship
+id_seq3 = Sequence("id_seq3")
+class Parent(Base):
+    __tablename__ = "parent"
+    id = Column(Integer, id_seq3, server_default=id_seq3.next_value(), primary_key=True)
+    children = relationship("Child", back_populates="parent")
+
+
+# Child class for one-to-many/many-to-one relationship
+id_seq4 = Sequence("id_seq4")
+class Child(Base):
+    __tablename__ = "child"
+    id = Column(Integer, id_seq4, server_default=id_seq4.next_value(), primary_key=True)
+    parent_id = Column(Integer, ForeignKey("parent.id"))
+    parent = relationship("Parent", back_populates="children")
 
 # Step 3: Creating the Database
 Base.metadata.create_all(engine)
@@ -68,6 +80,12 @@ student1.courses.append(course1)
 student2.courses.append(course2)
 session.add_all([student1, student2, course1, course2])
 
+#############################
+# Adding Parent and Children
+parent1 = Parent()
+child1 = Child(parent=parent1)
+child2 = Child(parent=parent1)
+session.add_all([parent1, child1, child2])
 
 session.commit()
 
