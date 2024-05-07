@@ -8,7 +8,7 @@ from fastapi import (
 )
 from fastapi.security import OAuth2PasswordBearer
 import json
-from typing import List, Tuple
+from typing import Dict, List, Tuple
 from config import settings
 from models import Task
 from database import SessionLocal, TaskModel
@@ -19,21 +19,30 @@ app = FastAPI(title=settings.app_name)
 
 class ConnectionManager:
     def __init__(self) -> None:
-        self.active_connections: List[WebSocket] = []  # type: ignore
+        # Maps client IDs to their WebSocket connections
+        self.active_connections: Dict[int, WebSocket] = {}
 
-    async def connect(self, websocket: WebSocket) -> None:
+    async def connect(self, client_id: int, websocket: WebSocket) -> None:
         await websocket.accept()
-        self.active_connections.append(websocket)
+        self.active_connections[client_id] = websocket
+        print(f"Client {client_id} connected.")
 
-    def disconnect(self, websocket: WebSocket) -> None:
-        self.active_connections.remove(websocket)
+    def disconnect(self, client_id: int) -> None:
+        if client_id in self.active_connections:
+            del self.active_connections[client_id]
+            print(f"Client {client_id} disconnected.")
 
-    async def send_task(self, message: str, websocket: WebSocket) -> None:
-        await websocket.send_text(message)
+    async def send_task(self, client_id: int, message: str) -> None:
+        if client_id in self.active_connections:
+            await self.active_connections[client_id].send_text(message)
+            print(f"Sent message to Client {client_id}.")
+        else:
+            print(f"Client {client_id} not found, cannot send message.")
 
     async def broadcast(self, message: str) -> None:
-        for connection in self.active_connections:
-            await connection.send_text(message)
+        for client_id, websocket in self.active_connections.items():
+            await websocket.send_text(message)
+            print(f"Broadcasted message to Client {client_id}.")
 
 
 manager = ConnectionManager()
