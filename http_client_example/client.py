@@ -2,6 +2,7 @@ import httpx
 from pydantic import ValidationError
 from models import *
 
+from settings import settings
 
 async def create_item(item: Item):
     url = "http://127.0.0.1:8000/items/"
