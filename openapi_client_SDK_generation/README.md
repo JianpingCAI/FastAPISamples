@@ -365,23 +365,6 @@ In this tutorial, I'll guide you through handling this scenario step-by-step. Ou
 
 ## Jianping Notes
 
-### Method1 - docker + url
-
-```bash
-
-docker run --rm -v ${PWD}:/local openapitools/openapi-generator-cli generate -i http://localhost:8000/openapi.json -g python -o /local/myapi-client-sdk
-
-
-```
-
-### Method2 - cli + url
-
-```bash
-
-openapi-generator-cli generate -i http://localhost:8000/openapi.json -g python -o ./python-client
-
-```
-
 ### Method3 - docker + jsonfile (I have used this method)
 
 ```bash
@@ -399,7 +382,24 @@ pip install ./myapi-client-sdk
 
 ```
 
-## Error with API not found 
+### Method1 - docker + url
+
+```bash
+
+docker run --rm -v ${PWD}:/local openapitools/openapi-generator-cli generate -i http://localhost:8000/openapi.json -g python -o /local/myapi-client-sdk
+
+
+```
+
+### Method2 - cli + url
+
+```bash
+
+openapi-generator-cli generate -i http://localhost:8000/openapi.json -g python -o ./python-client
+
+```
+
+## Error with API not found
 
 The error occurs because OpenAPI Generator relies on `operationId` fields in the OpenAPI specification to map endpoint functions to client methods. If the `operationId` is missing or improperly formatted, it might lead to incorrectly named client methods.
 
