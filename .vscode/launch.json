@@ -5,6 +5,18 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "unittest_fastapi",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "uvicorn",
+            "args": [
+                "app.main:app",
+                "--reload"
+            ],
+            "cwd": "${workspaceFolder}/unittest_fastapi/fastapi_crud",
+            "jinja": true
+        },
+        {
             "name": "websocket_client",
             "type": "debugpy",
             "request": "launch",
