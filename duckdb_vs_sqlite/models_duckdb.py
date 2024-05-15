@@ -18,7 +18,7 @@ from sqlalchemy import (
     Table,
     Sequence,
 )
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import relationship
 
 # Database connection setup (Update as per your database)

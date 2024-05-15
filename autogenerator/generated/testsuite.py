@@ -1,7 +1,7 @@
 # This Jinja2 template generates SQLAlchemy and Pydantic model classes #
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Text, Sequence, Table
 from sqlalchemy.orm import relationship
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import declarative_base
 from pydantic import BaseModel
 from typing import Optional, List
 from datetime import datetime
