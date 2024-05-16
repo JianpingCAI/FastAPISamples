@@ -1,5 +1,5 @@
-from typing import List, Optional
-from pydantic import BaseModel, ConfigDict
+from typing import Any, Dict, List, Optional
+from pydantic import BaseModel, ConfigDict, Json
 
 
 class UserBase(BaseModel):
@@ -8,7 +8,8 @@ class UserBase(BaseModel):
 
 
 class UserCreate(UserBase):
-    pass
+    # attributes: Optional[Dict[str, Any]] = None
+    attributes: Optional[Json] = None
 
 
 # Model for email addresses
@@ -30,4 +31,6 @@ class Email(EmailBase):
 class User(UserBase):
     id: int
     emails: List[Email] = []
+    # attributes: Optional[Dict[str, Any]] = None
+    attributes: Optional[Json] = None
     model_config = ConfigDict(from_attributes=True)

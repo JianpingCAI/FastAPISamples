@@ -1,7 +1,8 @@
 from sqlalchemy import Column, ForeignKey, Integer, String
 from .database import Base
 from sqlalchemy.orm import relationship
-
+from sqlalchemy.dialects.postgresql import JSONB
+from sqlalchemy.ext.mutable import MutableDict
 
 class User(Base):
     __tablename__ = "users"
@@ -9,6 +10,9 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, index=True)
     age = Column(Integer)
+    # attributes = Column(JSONB)
+    attributes = Column(MutableDict.as_mutable(JSONB))
+
     emails = relationship("Email", back_populates="user")
 
 

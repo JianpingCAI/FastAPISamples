@@ -7,7 +7,7 @@ from .schemas import UserCreate
 
 # Function to create a new user in the database
 def create_user(db: Session, user: UserCreate):
-    db_user = User(name=user.name, age=user.age)
+    db_user = User(name=user.name, age=user.age, attributes=user.attributes)
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
