@@ -2,7 +2,7 @@
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Text, Sequence, Table
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm import declarative_base
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from typing import Optional, List
 from datetime import datetime
 
@@ -53,5 +53,6 @@ class TestSuiteDB(TestSuiteBase):
     from .testcase import TestCaseDB
     testcases: List[TestCaseDB]
     
-    class Config:
-        from_attributes = True
+    # class Config:
+    #     from_attributes = True
+    model_config = ConfigDict(from_attributes=True)

@@ -2,7 +2,7 @@
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Text, Sequence
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm import declarative_base
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from typing import Optional
 from datetime import datetime
 
@@ -47,6 +47,5 @@ class {{ model_name }}DB({{ model_name }}Base):
     {{ field.name }}: {{ field.pydantic_type }}
     {%- endif %}
 {%- endfor %}
-
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
+    
