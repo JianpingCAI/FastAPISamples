@@ -5,6 +5,14 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "command_executor",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "main.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}/command_execution"
+        },
+        {
             "name": "unittest_fastapi",
             "type": "debugpy",
             "request": "launch",
