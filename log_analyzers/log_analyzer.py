@@ -1,7 +1,7 @@
 import re
 import sys
 import argparse
-from typing import List, Tuple
+from typing import List, Tuple, Dict
 
 
 class LogEntry:
@@ -9,35 +9,30 @@ class LogEntry:
         self,
         thread_id: str,
         request_number: int,
-        request_content_xml: str,
         request_content: str,
         duration: float,
     ):
         self.thread_id = thread_id
         self.request_number = request_number
-        self.request_content_xml = request_content_xml
         self.request_content = request_content
         self.duration = duration
 
     def __repr__(self) -> str:
         return (
-            f"LogEntry(thread_id={self.thread_id}, request_number={self.request_number}, "
-            f"request_content_xml='{self.request_content_xml}', request_content='{self.request_content}', "
-            f"duration={self.duration:.2f}s)"
+            f"thread_id={self.thread_id}, request_number={self.request_number}, "
+            f"\nrequest_content=\n'{self.request_content}', "
+            f"\nduration={self.duration:.2f}s"
         )
 
 
 def analyze_log_file(file_path: str) -> List[LogEntry]:
     # Regular expression patterns to match the required lines
-    xml_request_pattern = re.compile(
-        r"test \[(thread\d+)\] get a request:\n<xml>(.*?)</xml>", re.DOTALL
-    )
-    thread_request_pattern = re.compile(
-        r"-------\[(thread\d+)\] Request \[(\d+)\] ------\n(.*?)\n---------------------------",
+    thread_requestId_content_pattern = re.compile(
+        r"-------\[(.*?)\] Request \[(\d+)\] ------\n(.*?)\n---------------------------",
         re.DOTALL,
     )
-    duration_pattern = re.compile(
-        r"\[(thread\d+)\]The Request \[(\d+)\] is done in ([\d.]+)s"
+    thread_duration_pattern = re.compile(
+        r"\[(.*?)\]The Request \[(\d+)\] is done in ([\d.]+)s"
     )
 
     # List to store the LogEntry objects
@@ -47,42 +42,39 @@ def analyze_log_file(file_path: str) -> List[LogEntry]:
         with open(file_path, "r") as file:
             log_content: str = file.read()
 
-        # Extract all XML requests
-        xml_requests: List[Tuple[str, str]] = xml_request_pattern.findall(log_content)
-        xml_dict: dict[Tuple[str, int], str] = {
-            (thread, i + 1): content.strip()
-            for i, (thread, content) in enumerate(xml_requests)
+        # Extract all request details
+        thread_requestId_content_list: List[Tuple[str, str, str]] = (
+            thread_requestId_content_pattern.findall(log_content)
+        )
+        thread_requestId_content_dict: Dict[Tuple[str, int], str] = {
+            (thread, int(num)): content
+            for (thread, num, content) in thread_requestId_content_list
         }
 
-        # Extract all non-XML request details
-        thread_requests: List[Tuple[str, str, str]] = thread_request_pattern.findall(
-            log_content
+        # Extract all thread durations
+        thread_duration_list: List[Tuple[str, str, str]] = (
+            thread_duration_pattern.findall(log_content)
         )
-        duration_matches: List[Tuple[str, str, str]] = duration_pattern.findall(
-            log_content
-        )
+        thread_duration_dict: Dict[Tuple[str, int], float] = {
+            (thread, int(num)): float(duration)
+            for (thread, num, duration) in thread_duration_list
+        }
 
         # Process each request and find the corresponding content and duration
-        for thread_id, request_number_str, request_content in thread_requests:
-            request_number: int = int(request_number_str)
-
-            # Get XML content
-            request_content_xml: str = xml_dict.get((thread_id, request_number), "")
+        for (
+            thread_id,
+            request_id,
+        ), request_content in thread_requestId_content_dict.items():
 
             # Find processing duration
-            duration: float = 0.0
-            for t_id, num, dur in duration_matches:
-                if int(num) == request_number and t_id == thread_id:
-                    duration = float(dur)
-                    break
+            duration: float = thread_duration_dict.get((thread_id, request_id), 0.0)
 
-            # Create LogEntry and add to results
+            # Create LogEntry and add to results, limit request_content to 1000 characters
             results.append(
                 LogEntry(
                     thread_id,
-                    request_number,
-                    request_content_xml,
-                    request_content.strip(),
+                    request_id,
+                    request_content.strip(),  # Limit the content length
                     duration,
                 )
             )
@@ -101,11 +93,7 @@ def analyze_log_file(file_path: str) -> List[LogEntry]:
 
 def print_formatted_results(results: List[LogEntry]) -> None:
     for entry in results:
-        print(
-            f"Thread ID: {entry.thread_id}, Request Number: {entry.request_number}, "
-            f"Request Content XML: '{entry.request_content_xml}', "
-            f"Request Content: '{entry.request_content}', Duration: {entry.duration:.2f}s"
-        )
+        print(f"{entry}\n\n")
 
 
 if __name__ == "__main__":
@@ -121,4 +109,9 @@ if __name__ == "__main__":
     log_file_path: str = args.log_file
     entries: List[LogEntry] = analyze_log_file(log_file_path)
 
-    print_formatted_results(entries)
+    # Sort entries by duration in descending order and get the top ten
+    sorted_entries: List[LogEntry] = sorted(
+        entries, key=lambda x: x.duration, reverse=True
+    )[:10]
+
+    print_formatted_results(sorted_entries)

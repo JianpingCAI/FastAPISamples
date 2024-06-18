@@ -1,0 +1,46 @@
+[some] value 
+
+------- [xyz] get a request:
+<xml>
+    some xml1 content
+    somre more xml1 content
+    somre more xml1 content
+</xml>
+-------[xyz] Request [1] ------
+    request 
+    in a non-xml format
+    content
+---------------------------
+[xyz] Processing [1]
+some inbetween content
+[xyz]The Request [1] is done in 1.0s
+
+some other 
+test [lmn] get a request:
+<xml>
+some xml content
+somre more xml content
+</xml>
+-------[lmn] Request [2] ------
+request 
+in a non-xml format
+content
+---------------------------
+[lmn] Processing [2]
+some inbetween content
+[lmn]The Request [2] is done in 2.0s
+
+some other 
+test [xyz] get a request:
+<xml>
+some xml content
+somre more xml content
+</xml>
+-------[xyz] Request [3] ------
+request 
+in a non-xml format
+content
+---------------------------
+[xyz] Processing [3]
+some inbetween content
+[xyz]The Request [3] is done in 3.0s
