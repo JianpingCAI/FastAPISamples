@@ -1,0 +1,124 @@
+@startuml
+' !define Rectangle class
+' !define Database database
+
+actor User
+rectangle UI {
+    User -> FastAPI : Uses
+}
+
+Rectangle FastAPI {
+    note right : Handles API Requests\nand serves health endpoints
+    [Health Check Endpoint] ..> [API Server] : includes
+    [Test Execution Control] ..> [API Server] : includes
+    [Result Reporting] ..> [API Server] : includes
+}
+
+Database "PostgreSQL" {
+    note right : Stores Test Data\nand Runner Configurations
+    [Test Runs] ..> [Test Data] : includes
+    [Test Suites] ..> [Test Data] : includes
+    [Test Cases] ..> [Test Data] : includes
+    [Test Runner Configurations] ..> [Test Data] : includes
+}
+
+Rectangle "WebSocket Server" as WSS {
+    note right : Facilitates real-time communication
+}
+
+Rectangle TestRunner {
+    note right : Executes Tests\nand reports results
+    [Registration & Configuration] ..> [WebSocket Client] : uses
+    [Test Execution] ..> [WebSocket Client] : uses
+    [Real-Time Monitoring] ..> [WebSocket Client] : uses
+}
+
+FastAPI --> PostgreSQL : reads/writes
+FastAPI --> WSS : establishes
+WSS --> TestRunner : bidirectional\ncommunication
+TestRunner --> PostgreSQL : updates/results
+
+rectangle Monitoring {
+    [Prometheus] ..> [Monitoring & Alerts] : collects metrics
+    [Grafana] ..> [Monitoring & Alerts] : visualizes metrics
+}
+
+FastAPI --> Prometheus : exposes metrics
+TestRunner --> Prometheus : exposes metrics
+Prometheus --> Grafana : data source
+
+@enduml
+
+@startuml
+package "UI" {
+    [User Interface]
+}
+
+package "API Server" {
+    [FastAPI Application] as FastAPI
+    [Database] as DB
+}
+
+package "TestRunner" {
+    [Test Execution Module] as TestExec
+    [WebSocket Client] as WSClient
+}
+
+[User Interface] --> FastAPI : Sends API requests
+FastAPI --> DB : Reads/Writes Data
+FastAPI --> WSClient : WebSocket Communication
+WSClient --> TestExec : Sends Commands
+TestExec --> DB : Updates Test Results
+
+@enduml
+
+@startuml
+actor User
+participant "User Interface" as UI
+participant "FastAPI Application" as FastAPI
+participant "WebSocket Server" as WSS
+participant "TestRunner" as TR
+
+User -> UI : Initiate Test Run
+UI -> FastAPI : POST /test_runs
+activate FastAPI
+FastAPI -> DB : Store Test Details
+FastAPI -> WSS : Send Test Run Command
+activate WSS
+WSS -> TR : Forward Command
+activate TR
+TR -> TR : Execute Tests
+TR -> WSS : Send Test Results
+deactivate TR
+WSS -> FastAPI : Forward Results
+deactivate WSS
+FastAPI -> DB : Update Results
+deactivate FastAPI
+UI <-- FastAPI : Display Results
+@enduml
+
+@startuml
+node "Web Browser" {
+    [UI]
+}
+
+node "Web Server" {
+    folder "API Server" {
+        [FastAPI Application]
+        [WebSocket Server]
+    }
+    database "Database" {
+    }
+}
+
+node "TestRunner Host" {
+    [TestRunner Application]
+}
+
+[UI] --> [FastAPI Application] : HTTP Requests
+[FastAPI Application] --> [Database] : Queries & Updates
+[TestRunner Application] --> [WebSocket Server] : WebSocket Connection
+[WebSocket Server] --> [FastAPI Application] : Communicates Results
+
+@enduml
+
