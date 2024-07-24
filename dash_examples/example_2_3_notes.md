@@ -139,4 +139,4 @@ By structuring your application in this way, you create a clear separation of co
 
 ### Notes
 
-- `register_callbacks` mechanism 
+- `register_callbacks` mechanism.
