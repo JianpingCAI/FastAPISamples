@@ -17,3 +17,7 @@ Callbacks for Navigation: The callback in app.py updates the content of the page
 
 dcc.Store Component: Stores data in the browser's local storage or session storage.
 This data is accessible across different callbacks.
+
+### Note
+
+The data needs to be serialized into a JSON string before being stored in the browser's local storage or session storage.

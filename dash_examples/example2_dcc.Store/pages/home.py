@@ -44,6 +44,7 @@ home_layout = dmc.MantineProvider(
     ]
 )
 
+
 # Function to register callbacks
 def register_callbacks(app):
     @app.callback(
@@ -56,6 +57,7 @@ def register_callbacks(app):
     )
     def store_data(n_clicks, name, age, email):
         if n_clicks:
+            # Note: the data needs to be serilized into a JSON string before being placed in storage
             data = {"name": name, "age": age, "email": email}
             print("Data stored:", data)  # Debug print
             return data, f"Data stored: {data}"

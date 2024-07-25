@@ -5,6 +5,7 @@ In this tutorial, we'll explore how to build a multi-page Dash application that 
 ### Overview
 
 Our application will consist of three main parts:
+
 1. **Home Page**: Users can enter data that will be shared across other pages.
 2. **Page 1 and Page 2**: Display the data entered on the Home Page and allow further interactions.
 
@@ -69,6 +70,7 @@ if __name__ == "__main__":
 Each page module (`home.py`, `page1.py`, `page2.py`) should include both the layout and the callbacks specific to that page.
 
 **`pages/home.py`**:
+
 ```python
 from dash import html, dcc, Output, Input, State
 import dash_mantine_components as dmc
