@@ -42,6 +42,7 @@ export REACT_VERSION=18.2.0
 To share data safely across multiple processes/servers,
 
 - In the user's browser session, using `dcc.Store`
+- - `example2_dcc.Store`
 - On the disk (e.g., file or database)
 - In server-side memory (RAM) shared across processes and servers such as Redis database
 - Flask cache
