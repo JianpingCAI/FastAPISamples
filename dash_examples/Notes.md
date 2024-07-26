@@ -48,3 +48,7 @@ To share data safely across multiple processes/servers,
 - Flask cache
 
 ### Pattern-Matching Callbacks
+
+## Patch - Partial Property Update
+
+`Patch` is not available on clientside callbacks.

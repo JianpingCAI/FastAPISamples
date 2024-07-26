@@ -9,6 +9,8 @@ import pandas as pd
 from flask_caching import Cache
 
 
+os.environ["REDIS_URL"] = "redis://localhost:6379"
+
 external_stylesheets = [
     # Dash CSS
     "https://codepen.io/chriddyp/pen/bWLwgP.css",
@@ -22,7 +24,7 @@ server = app.server
 CACHE_CONFIG = {
     # try 'FileSystemCache' if you don't want to setup redis
     "CACHE_TYPE": "redis",
-    "CACHE_REDIS_URL": os.environ.get("REDIS_URL", "redis://localhost:6379"),
+    "CACHE_REDIS_URL": os.environ.get("REDIS_URL", "redis://127.0.0.1:6379"),
 }
 cache = Cache()
 cache.init_app(app.server, config=CACHE_CONFIG)
@@ -59,7 +61,7 @@ app.layout = html.Div(
             ],
             className="row",
         ),
-        # signal value to trigger callbacks !!!!!!!!!!!
+        # signal value to trigger callbacks
         dcc.Store(id="signal"),
     ]
 )
@@ -162,6 +164,4 @@ def update_graph_4(value):
 
 
 if __name__ == "__main__":
-    # multi-processes: multiple callbacks can be executed in parallel!!!!!!!!!!!!!!
-    # In production, this is done with something like `gunicorn -w 6 -b 0.0.0.0:8050 app:server`
     app.run(debug=True, processes=6, threaded=False)
