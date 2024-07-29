@@ -29,8 +29,28 @@ docker run --name my-redis-container -p 6379:6379 -d redis
 pip install fastapi[all] celery[redis] uvicorn
 ```
 
+## Start the fastAPI server
+
+```bash
+cd 
+uvicorn main:app --host 0.0.0.0 --port 8000
+```
+
 ## Start the Celery worker
 
 ```bash
+cd tasks
 celery -A worker.celery_app worker --loglevel=info
+```
+
+## Install and Run the Flower
+
+Flower: a web-based tool for monitoring and managing tasks
+
+```bash
+
+pip install Flower
+cd tasks
+
+celery -A worker.celery_app flower
 ```

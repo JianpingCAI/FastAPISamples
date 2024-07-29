@@ -3,6 +3,8 @@ import time
 
 
 # Configure Celery
+# - to use Redis running on localhost at port 6379 and using database 0 as the message broker.
+# - to use the same Redis instance as the backend for storing task results.
 celery_app = Celery(
     "tasks", broker="redis://localhost:6379/0", backend="redis://localhost:6379/0"
 )
@@ -14,8 +16,8 @@ def long_running_task(self, x):
         total = x
         for i in range(total):
             time.sleep(1)
-            if i == 5:
-                raise ValueError("Example error at iteration 5")
+            # if i == 5:
+            #     raise ValueError("Example error at iteration 5")
             self.update_state(state="PROGRESS", meta={"current": i, "total": total})
         return f"Task completed after processing {total} items"
     except Exception as e:
