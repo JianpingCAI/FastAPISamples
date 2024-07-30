@@ -32,6 +32,18 @@
             "jinja": true
         },
         {
+            "name": "example1_auth2",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "uvicorn",
+            "args": [
+                "main:app",
+                "--reload"
+            ],
+            "cwd": "${workspaceFolder}/fastapi_auth/example1_auth2",
+            "jinja": true
+        },
+        {
             "name": "websocket_client",
             "type": "debugpy",
             "request": "launch",

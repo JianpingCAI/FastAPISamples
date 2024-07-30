@@ -1,10 +1,9 @@
-from dash import html, register_page, no_update
+import dash
+from dash import html
 from dash.dependencies import Input, Output, State
 import dash_mantine_components as dmc
 
-register_page(__name__, path="/")
-
-layout = dmc.MantineProvider(
+home_layout = dmc.MantineProvider(
     children=[
         html.H1("Home Page"),
         dmc.TextInput(
@@ -62,4 +61,4 @@ def register_callbacks(app):
             data = {"name": name, "age": age, "email": email}
             print("Data stored:", data)  # Debug print
             return data, f"Data stored: {data}"
-        return no_update, "Click the button to store data."
+        return dash.no_update, "Click the button to store data."

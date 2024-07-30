@@ -1,10 +1,8 @@
-from dash import html, register_page
+from dash import html
 import dash_mantine_components as dmc
 from dash.dependencies import Input, Output
 
-register_page(__name__, path='/page1')
-
-layout = dmc.MantineProvider(
+page1_layout = dmc.MantineProvider(
     children=[
         html.H1("Page 1"),
         dmc.Anchor("Go to Home Page", href="/", mt=10),
