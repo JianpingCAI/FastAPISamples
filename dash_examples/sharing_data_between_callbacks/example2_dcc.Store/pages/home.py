@@ -1,4 +1,4 @@
-from dash import html, register_page, no_update
+from dash import html, register_page, no_update, callback
 from dash.dependencies import Input, Output, State
 import dash_mantine_components as dmc
 
@@ -47,19 +47,18 @@ layout = dmc.MantineProvider(
 
 
 # Function to register callbacks
-def register_callbacks(app):
-    @app.callback(
-        Output("shared-data", "data"),
-        Output("home-output", "children"),
-        Input("store-data-button", "n_clicks"),
-        State("input-name", "value"),
-        State("input-age", "value"),
-        State("input-email", "value"),
-    )
-    def store_data(n_clicks, name, age, email):
-        if n_clicks:
-            # Note: the data needs to be serilized into a JSON string before being placed in storage
-            data = {"name": name, "age": age, "email": email}
-            print("Data stored:", data)  # Debug print
-            return data, f"Data stored: {data}"
-        return no_update, "Click the button to store data."
+@callback(
+    Output("shared-data", "data"),
+    Output("home-output", "children"),
+    Input("store-data-button", "n_clicks"),
+    State("input-name", "value"),
+    State("input-age", "value"),
+    State("input-email", "value"),
+)
+def store_data(n_clicks, name, age, email):
+    if n_clicks:
+        # Note: the data needs to be serilized into a JSON string before being placed in storage
+        data = {"name": name, "age": age, "email": email}
+        print("Data stored:", data)  # Debug print
+        return data, f"Data stored: {data}"
+    return no_update, "Click the button to store data."

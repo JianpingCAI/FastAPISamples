@@ -1,4 +1,4 @@
-from dash import html, register_page
+from dash import html, register_page, callback
 import dash_mantine_components as dmc
 from dash.dependencies import Input, Output
 
@@ -16,15 +16,14 @@ layout = dmc.MantineProvider(
 )
 
 # Function to register callbacks
-def register_callbacks(app):
-    @app.callback(Output("page1-output", "children"), Input("shared-data", "data"))
-    def display_data_page1(data):
-        if data:
-            return html.Div(
-                [
-                    html.P(f"Name: {data['name']}"),
-                    html.P(f"Age: {data['age']}"),
-                    html.P(f"Email: {data['email']}"),
-                ]
-            )
-        return "No data stored yet."
+@callback(Output("page1-output", "children"), Input("shared-data", "data"))
+def display_data_page1(data):
+    if data:
+        return html.Div(
+            [
+                html.P(f"Name: {data['name']}"),
+                html.P(f"Age: {data['age']}"),
+                html.P(f"Email: {data['email']}"),
+            ]
+        )
+    return "No data stored yet."
