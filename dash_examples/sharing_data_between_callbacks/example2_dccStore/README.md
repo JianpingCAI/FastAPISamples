@@ -7,6 +7,16 @@ python app.py
 
 ```
 
+or,
+
+```bash
+
+export REACT_VERSION=18.2.0
+
+gunicorn example2_dccStore.app:server --reload --log-level debug
+
+```
+
 ## dcc.Location component for URL routing
 
 dcc.Location Component: Used to track the URL and trigger page navigation.
