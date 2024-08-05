@@ -20,6 +20,18 @@
             "cwd": "${workspaceFolder}/command_execution"
         },
         {
+            "name": "dash_app",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "gunicorn",
+            "args": [
+                "app:server",
+                "--reload"
+            ],
+            "cwd": "${workspaceFolder}/dash_examples/dmc_mantine/example2_tasks_tracking_db_tabs_aggrid3/",
+            "jinja": true
+        },
+        {
             "name": "unittest_fastapi",
             "type": "debugpy",
             "request": "launch",
