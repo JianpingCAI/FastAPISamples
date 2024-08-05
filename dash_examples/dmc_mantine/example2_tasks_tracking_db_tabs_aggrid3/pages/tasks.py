@@ -56,12 +56,14 @@ gridOptions = {
     "pagination": True,
     "paginationPageSize": 10,
     "rowSelection": "multiple",
-    # "getRowId": {"function": "params => params.data.id"},  # Correctly define getRowId, this is not necessary 
+    # "getRowId": {"function": "params => params.data.id"},  # This ensures each row has a unique ID. Correctly define getRowId, this is not necessary
 }
 
 layout = dmc.MantineProvider(
     [
-        dcc.Store(id="tasks-page-load", data={"load": True}),
+        dcc.Store(
+            id="tasks-page-load", data={"value": "pending"}
+        ),  # Initial value for the active tab
         dcc.Store(id="modal-submitted", data=False),
         dmc.Title("Tasks", order=1),
         dmc.Button("Add Task", id="open-modal-button"),
@@ -135,15 +137,22 @@ layout = dmc.MantineProvider(
 
 @callback(
     Output("task-modal", "opened"),
-    Input("open-modal-button", "n_clicks"),
-    Input("modal-submitted", "data"),
-    State("task-modal", "opened"),
+    [Input("open-modal-button", "n_clicks"), Input("submit-task-button", "n_clicks")],
+    [State("task-modal", "opened")],
 )
-def toggle_modal(n_clicks, modal_submitted, is_open):
-    if modal_submitted:
-        return False
-    if n_clicks:
-        return not is_open
+def toggle_modal(open_clicks, submit_clicks, is_open):
+    ctx = dash.callback_context
+
+    if not ctx.triggered:
+        raise PreventUpdate
+
+    triggered_id = ctx.triggered_id
+
+    if triggered_id == "open-modal-button":
+        return not is_open  # Toggle modal state when open button is clicked
+    elif triggered_id == "submit-task-button":
+        return False  # Close modal when submit button is clicked
+
     return is_open
 
 
@@ -193,7 +202,7 @@ def display_tasks(_, modal_submitted):
     prevent_initial_call=True,
 )
 def handle_action(
-    complete_clicks, delete_clicks, pending_selected, completed_selected, page_load_data
+    complete_clicks, delete_clicks, pending_selected, completed_selected, active_tab
 ):
     ctx = dash.callback_context
     if not ctx.triggered:
@@ -204,9 +213,9 @@ def handle_action(
         return dash.no_update
 
     selected_rows = (
-        pending_selected if page_load_data["value"] == "pending" else completed_selected
+        pending_selected if active_tab["value"] == "pending" else completed_selected
     )
-    if not selected_rows:
+    if not selected_rows or len(selected_rows) == 0:
         raise PreventUpdate
 
     db: Session = SessionLocal()
