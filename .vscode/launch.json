@@ -28,7 +28,7 @@
                 "app:server",
                 "--reload"
             ],
-            "cwd": "${workspaceFolder}/dash_examples/dmc_mantine/example2_tasks_tracking_db_tabs_aggrid3/",
+            "cwd": "${workspaceFolder}/dash_examples/dmc_mantine/example2_tasks_tracking_db_tabs_aggrid4/",
             "jinja": true
         },
         {
