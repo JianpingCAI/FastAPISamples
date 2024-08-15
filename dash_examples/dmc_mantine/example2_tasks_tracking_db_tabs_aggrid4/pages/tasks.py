@@ -386,14 +386,13 @@ def handle_task_row_complete(data, rows_data):
         tasks = load_tasks()
         # pending_rows = generate_table_data(tasks, "Pending")
         completed_rows = generate_table_data(tasks, "Completed")
-        return json.dumps(row_data), {"remove": row_data}, completed_rows
+        return json.dumps(row_data), {"remove": [row_data]}, completed_rows
 
     elif action == "edit_or_save":
         prev_edit_mode = data["value"]["data"]["edit_mode"]
         new_edit_mode = not prev_edit_mode
 
         print(f"action: {action}")
-        row_data["editable"] = True  # Make the row editable
 
         # Save the changes
         if new_edit_mode:
@@ -401,7 +400,9 @@ def handle_task_row_complete(data, rows_data):
             for row in rows_data:
                 if row["id"] == task_id:
                     logging.debug("row-1: %s", row)
+
                     row["edit_mode"] = True
+
                     logging.debug("row-2: %s", row)
                     logging.debug("rows_data: %s", rows_data)
                     return json.dumps(row), {"update": [row]}, dash.no_update
@@ -416,7 +417,7 @@ def handle_task_row_complete(data, rows_data):
                     db.close()
                     logging.debug("row-4: %s", row)
                     logging.debug("rows_data: %s", rows_data)
-                    return json.dumps(row), {"update": rows_data}, dash.no_update
+                    return json.dumps(row), {"update": [row]}, dash.no_update
 
         raise PreventUpdate
 
