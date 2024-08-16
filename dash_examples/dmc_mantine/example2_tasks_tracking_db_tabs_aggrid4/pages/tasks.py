@@ -49,6 +49,23 @@ def generate_table_data(tasks: List[Task], status_filter: str) -> List[Dict]:
     ]
 
 
+def generate_cell_style():
+    return {"function": "params.data.edit_mode == true ? {backgroundColor: 'red'} : {}"}
+
+
+def generate_editable_condition():
+    return {"function": "params.data.edit_mode"}
+
+
+# cellStyle = {
+#     "styleConditions": [
+#         {
+#             "condition": "params.data.edit_mode == true",
+#             "style": {"backgroundColor": "red"},
+#         },
+#     ]
+# }
+
 task_columnDefs_base = [
     {
         "headerName": "Select",
@@ -62,7 +79,8 @@ task_columnDefs_base = [
         "sortable": True,
         "filter": True,
         # conditionally enables editing
-        "editable": {"function": "params.data.edit_mode == true"},
+        "editable": generate_editable_condition(),
+        "cellStyle": {"backgroundColor": "red"},
     },
     {
         "headerName": "Description",
@@ -70,7 +88,8 @@ task_columnDefs_base = [
         "sortable": False,
         "filter": False,
         # conditionally enables editing
-        "editable": {"function": "params.data.edit_mode == true"},
+        "editable": generate_editable_condition(),
+        "cellStyle": generate_cell_style(),
     },
     {
         "headerName": "Due Date",
@@ -130,15 +149,6 @@ task_dashGridOptions = {
     "paginationPageSize": 10,
     "rowSelection": "multiple",
     # "getRowId": {"function": "params => params.data.id"},  # This ensures each row has a unique ID. Correctly define getRowId, this is not necessary
-}
-
-cellStyle = {
-    "styleConditions": [
-        {
-            "condition": "params.data.edit_mode == true",
-            "style": {"backgroundColor": "red"},
-        },
-    ]
 }
 
 
