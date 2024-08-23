@@ -5,3 +5,4 @@
 **/python-client/
 **/cache-directory/
 cache.db*
+*.duckdb*
