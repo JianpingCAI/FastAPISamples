@@ -8,7 +8,7 @@ from orm_models import *
 def main():
     # Step 1: Create the database engine
     engine = create_engine(
-        "sqlite:///example.db", echo=False
+        "sqlite:///example.db", echo=True
     )  # Replace with your actual database URL
     SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
@@ -47,7 +47,7 @@ def main():
         print(e)
 
     # Step 6: Remove one book from the author
-    remove_books_from_author(db, author_id=author.id, book_ids=[book_2.id])
+    remove_books_from_author(db, author_id=author.id, book_ids=[book_1.id, book_2.id])
     print(f"Removed book {book_2.title} from author {author.name}")
 
     # Fetch and print books of author with ID 1
