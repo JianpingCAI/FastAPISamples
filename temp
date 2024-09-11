@@ -1,0 +1,10 @@
+js_code = assign("""
+function(params) {
+    let api = params.api;
+    let rowIndex = api.getDisplayedRowCount() - 1;  // Get the last row index
+    api.startEditingCell({
+        rowIndex: rowIndex,
+        colKey: 'name'  // Start editing from the 'name' column
+    });
+}
+""")
