@@ -12,11 +12,18 @@ dagAPIFuncs.startEditingNewRow = (row_id, id) => {
         const rowNode = grid.getRowNode(row_id); // Directly get the row node by its ID
 
         if (rowNode) {
-          // Start editing the new row's 'name' field
-          grid.startEditingCell({
-            rowIndex: rowNode.rowIndex,
-            colKey: "name",
-          });
+          // Find the first editable column dynamically
+          const editableColumn = grid
+            .getColumnDefs()
+            .find((colDef) => colDef.editable);
+
+          if (editableColumn) {
+            // Start editing the new row's first editable column
+            grid.startEditingCell({
+              rowIndex: rowNode.rowIndex,
+              colKey: editableColumn.field, // Use the field name of the first editable column
+            });
+          }
         }
       });
     });
