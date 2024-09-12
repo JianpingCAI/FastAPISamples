@@ -61,7 +61,7 @@ def add_row(n_clicks):
 
 # Client-side callback to trigger cell editing
 app.clientside_callback(
-    "window.dagAPIFuncs.startEditingNewRow",
+    "dagAPIFuncs.startEditingNewRow",
     Output("dummy-store", "data"),  # Dummy output to fulfill Dash callback contract
     Input("dcc-new-row-id", "data"),
     State("grid", "id"),
