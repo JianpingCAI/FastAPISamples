@@ -2,6 +2,44 @@ import re
 from datetime import datetime
 from typing import Tuple, Union
 
+from typing import Tuple, Optional
+
+
+def validate_string_length(
+    value: Optional[str], min_len: Optional[int] = None, max_len: Optional[int] = None
+) -> Tuple[bool, str]:
+    """
+    Validates that the length of the string is within the optional min_len and max_len range.
+
+    Args:
+        value (Optional[str]): The string to validate.
+        min_len (Optional[int]): The minimum allowed length (inclusive). Default is None.
+        max_len (Optional[int]): The maximum allowed length (inclusive). Default is None.
+
+    Returns:
+        Tuple[bool, str]: A tuple where the first value is a boolean indicating if validation passed,
+                          and the second value is an error message if validation failed.
+    """
+    if value is None:
+        return False, "String value is required."
+
+    value_len = len(value)
+
+    if min_len is not None and max_len is not None:
+        if value_len < min_len or value_len > max_len:
+            return (
+                False,
+                f"String length must be between {min_len} and {max_len} characters.",
+            )
+
+    if min_len is not None and value_len < min_len:
+        return False, f"String is too short. Minimum length is {min_len} characters."
+
+    if max_len is not None and value_len > max_len:
+        return False, f"String is too long. Maximum length is {max_len} characters."
+
+    return True, "String length is valid."
+
 
 def validate_name(name: str) -> Tuple[bool, Union[str, None]]:
     """Validates that the name is at least 3 characters long."""
