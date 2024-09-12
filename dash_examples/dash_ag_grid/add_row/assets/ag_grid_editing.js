@@ -30,3 +30,14 @@ dagAPIFuncs.startEditingNewRow = (row_id, id) => {
   }
   return null;
 };
+
+dagAPIFuncs.stopEditing = (row_id, id) => {
+  if (row_id) {
+    console.log("row_id = " + row_id);
+    // Access the grid API asynchronously after the row data is updated
+    dash_ag_grid.getApiAsync(id).then((grid) => {
+      grid.stopEditing();
+    });
+  }
+  return null;
+};
