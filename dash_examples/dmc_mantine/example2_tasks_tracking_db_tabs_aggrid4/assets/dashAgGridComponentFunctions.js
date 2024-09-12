@@ -1,7 +1,7 @@
-var dagcomponentfuncs = (window.dashAgGridComponentFunctions =
-  window.dashAgGridComponentFunctions || {});
+var dagcomponentfuncs = (window.dashAgGridAPIFunctions =
+  window.dashAgGridAPIFunctions || {});
 
-console.log("dashAgGridComponentFunctions loaded");
+console.log("dashAgGridAPIFunctions loaded");
 
 dagcomponentfuncs.SomeLink = function (props) {
   return React.createElement(

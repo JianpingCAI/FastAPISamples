@@ -1,5 +1,5 @@
-var dagcomponentfuncs = (window.dashAgGridComponentFunctions =
-  window.dashAgGridComponentFunctions || {});
+var dagcomponentfuncs = (window.dashAgGridAPIFunctions =
+  window.dashAgGridAPIFunctions || {});
 
 dagcomponentfuncs.DMC_Action_Button = function (props) {
   // console.log("props.data = " + JSON.stringify(props.data, null, 2));
