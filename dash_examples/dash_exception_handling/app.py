@@ -1,3 +1,4 @@
+from typing import Iterable
 from dash import Dash, html, dcc, Input, Output, State
 import dash_mantine_components as dmc
 
@@ -29,6 +30,13 @@ def handle_with_notifications(
     try:
         # Run the main callback logic and collect all intended outputs
         result_outputs = callback_logic()
+
+        # Ensure result_outputs is always a list
+        if not isinstance(result_outputs, Iterable) or isinstance(result_outputs, str):
+            # Wrap non-iterable or string output in a list
+            result_outputs = [result_outputs]
+        else:
+            result_outputs = list(result_outputs)
 
         # Add a success notification if specified
         if success_message:
