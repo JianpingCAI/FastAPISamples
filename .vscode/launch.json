@@ -26,9 +26,11 @@
             "module": "gunicorn",
             "args": [
                 "app:server",
-                "--reload"
+                "--reload",
+                "--timeout",
+                "1000"
             ],
-            "cwd": "${workspaceFolder}/dash_examples/dmc_mantine/example2_tasks_tracking_db_tabs_aggrid4/",
+            "cwd": "${workspaceFolder}/dash_examples/dash_exception_handling/",
             "jinja": true
         },
         {
