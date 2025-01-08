@@ -24,69 +24,33 @@ app.layout = dmc.MantineProvider(
 
 # Helper function for reusable exception handling with notifications
 def handle_with_notifications(
-    callback_logic, success_message=None, default_outputs=None
-):
+    callback_logic: callable, success_message: str = None, default_outputs: list = None
+) -> list:
     notifications = []
     try:
         # Run the main callback logic and collect all intended outputs
         result_outputs = callback_logic()
 
         # Ensure result_outputs is always a list
-        if not isinstance(result_outputs, Iterable) or isinstance(result_outputs, str):
+        if (
+            isinstance(result_outputs, Iterable)
+            and not isinstance(result_outputs, str)
+            and not isinstance(result_outputs, list)
+        ):
             # Wrap non-iterable or string output in a list
-            result_outputs = [result_outputs]
-        else:
             result_outputs = list(result_outputs)
-
-        # Add a success notification if specified
-        if success_message:
-            notifications.append(
-                dmc.Notification(
-                    title="Success",
-                    action="show",
-                    message=success_message,
-                    color="green",
-                    autoClose=3000,
-                )
-            )
-        # Return notifications and callback result
-        return [notifications] + list(result_outputs)
-
-    except ZeroDivisionError:
-        notifications.append(
-            dmc.Notification(
-                title="Error",
-                message="Cannot divide by zero!",
-                action="show",
-                color="red",
-                autoClose=5000,
-            )
-        )
-    except ValueError as e:
-        notifications.append(
-            dmc.Notification(
-                title="Input Error",
-                message=str(e),
-                action="show",
-                color="orange",
-                autoClose=5000,
-            )
-        )
     except Exception as e:
-        notifications.append(
-            dmc.Notification(
-                title="Unexpected Error",
-                message=f"An error occurred: {str(e)}",
-                action="show",
-                color="red",
-                autoClose=5000,
-            )
-        )
-
-    # Return notifications with default outputs or None if no default outputs specified
-    return [notifications] + (
-        default_outputs if default_outputs else [None] * len(result_outputs)
-    )
+        notifications.append(f"Error: {str(e)}")
+        result_outputs = default_outputs if default_outputs is not None else []
+    
+    if success_message:
+        notifications.append(success_message)
+    
+    # Handle notifications (this part is assumed and should be implemented)
+    # for notification in notifications:
+    #     dmc.show_notification(notification)
+    
+    return result_outputs
 
 
 # Callback for calculating sum and product
